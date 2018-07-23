@@ -1,0 +1,23 @@
+{
+  "name": "afirlejczyk/magento2-review-api",
+  "description": "Review WebAPI",
+  "type": "magento2-module",
+  "authors": [
+    {
+      "name": "Agata Firlejczyk <a.firlejczyk@gmail.com>",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "~7.0.13|~7.1.0",
+    "magento/module-review": "100.2.5"
+  },
+  "autoload": {
+    "files": [
+      "src/registration.php"
+    ],
+    "psr-4": {
+      "Divante\\ReviewApi\\": "/src"
+    }
+  }
+}

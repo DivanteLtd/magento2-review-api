@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+    <route url="/V1/products/:sku/review" method="GET">
+        <service class="Divante\ReviewApi\Api\GetProductReviewsInterface" method="execute"/>
+        <resources>
+            <resource ref="Magento_Review::reviews_all"/>
+        </resources>
+    </route>
+    <route url="/V1/reviews/:reviewId" method="GET">
+        <service class="Divante\ReviewApi\Api\ReviewRepositoryInterface" method="get"/>
+        <resources>
+            <resource ref="Magento_Review::reviews_all"/>
+        </resources>
+    </route>
+    <route url="/V1/reviews/:id" method="PUT">
+        <service class="Divante\ReviewApi\Api\ReviewRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Magento_Review::reviews_all"/>
+        </resources>
+    </route>
+    <route url="/V1/reviews" method="POST">
+        <service class="Divante\ReviewApi\Api\ReviewRepositoryInterface" method="save"/>
+        <resources>
+            <resource ref="Magento_Review::reviews_all"/>
+        </resources>
+    </route>
+    <route url="/V1/reviews/:reviewId" method="DELETE">
+        <service class="Divante\ReviewApi\Api\ReviewRepositoryInterface" method="deleteById"/>
+        <resources>
+            <resource ref="Magento_Review::reviews_all"/>
+        </resources>
+    </route>
+    <route url="/V1/reviews" method="GET">
+        <service class="Divante\ReviewApi\Api\ReviewRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Magento_Review::reviews_all"/>
+        </resources>
+    </route>
+</routes>

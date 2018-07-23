@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:DataObject/etc/fieldset.xsd">
+    <scope id="global">
+        <fieldset id="review_api_convert_review">
+            <field name="review_id">
+                <aspect name="to_review_data_object" targetField="id" />
+            </field>
+            <field name="status_id">
+                <aspect name="to_review_data_object" targetField="review_status"/>
+            </field>
+            <field name="detail">
+                <aspect name="to_review_data_object"/>
+            </field>
+            <field name="created_at">
+                <aspect name="to_review_data_object"/>
+            </field>
+            <field name="title">
+                <aspect name="to_review_data_object"/>
+            </field>
+            <field name="nickname">
+                <aspect name="to_review_data_object"/>
+            </field>
+            <field name="customer_id">
+                <aspect name="to_review_data_object"/>
+            </field>
+            <field name="stores">
+                <aspect name="to_review_data_object"/>
+            </field>
+        </fieldset>
+    </scope>
+</config>

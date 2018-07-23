@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Divante\ReviewApi\Api\Data\ReviewInterface" type="Divante\ReviewApi\Model\Data\Review"/>
+    <preference for="Divante\ReviewApi\Api\Data\RatingVoteInterface" type="Divante\ReviewApi\Model\Data\RatingVote"/>
+    <preference for="Divante\ReviewApi\Api\GetProductReviewsInterface" type="Divante\ReviewApi\Model\GetProductReviews"/>
+    <preference for="Divante\ReviewApi\Api\ReviewRepositoryInterface" type="Divante\ReviewApi\Model\ReviewRepository"/>
+    <preference for="Divante\ReviewApi\Model\Review\Command\DeleteByIdInterface" type="Divante\ReviewApi\Model\Review\Command\DeleteById"/>
+    <preference for="Divante\ReviewApi\Model\Review\Command\SaveInterface" type="Divante\ReviewApi\Model\Review\Command\Save"/>
+    <preference for="Divante\ReviewApi\Model\Review\Command\GetInterface" type="Divante\ReviewApi\Model\Review\Command\Get"/>
+    <preference for="Divante\ReviewApi\Model\Review\Command\GetListInterface" type="Divante\ReviewApi\Model\Review\Command\GetList"/>
+    <preference for="Divante\ReviewApi\Model\ReviewValidatorInterface" type="Divante\ReviewApi\Model\ReviewValidationChain"/>
+
+    <preference for="Divante\ReviewApi\Api\Data\ReviewSearchResultInterface" type="Divante\ReviewApi\Model\ReviewSearchResult"/>
+
+    <type name="Divante\ReviewApi\Model\ReviewValidationChain">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="title" xsi:type="object">Divante\ReviewApi\Model\Review\Validator\TitleValidator</item>
+                <item name="detail" xsi:type="object">Divante\ReviewApi\Model\Review\Validator\DetailValidator</item>
+                <item name="nickname" xsi:type="object">Divante\ReviewApi\Model\Review\Validator\NicknameValidator</item>
+                <item name="review_entity" xsi:type="object">Divante\ReviewApi\Model\Review\Validator\ReviewEntityValidator</item>
+                <item name="entity_pk_value" xsi:type="object">Divante\ReviewApi\Model\Review\Validator\EntityPkValueValidator</item>
+                <item name="stores" xsi:type="object">Divante\ReviewApi\Model\Review\Validator\StoresValidator</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
