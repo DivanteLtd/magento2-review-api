@@ -19,7 +19,7 @@ Module allow:
 | /V1/products/:sku/reviews | GET | Get product reviews |
 
 ### Compatibility
-Module was tested on Magento 2.2.5
+Module was tested on Magento 2.2.0
 
 ### TODO
 Create/Save full review (with ratings)
