@@ -207,4 +207,20 @@ class Review extends AbstractSimpleObject implements ReviewInterface
     {
         return $this->setData(self::STORES, $stores);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getStoreId()
+    {
+        return $this->_get(self::STORE_ID);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setStoreId($storeId)
+    {
+        return $this->setData(self::STORE_ID, $storeId);
+    }
 }

@@ -80,6 +80,10 @@ class Save implements SaveInterface
             $dataModel->setStores([$this->storeManager->getStore()->getId()]);
         }
 
+        if ((null === $dataModel->getId()) && (null === $dataModel->getStoreId())) {
+            $dataModel->setStoreId($this->storeManager->getStore()->getId());
+        }
+
         $validationResult = $this->reviewValidator->validate($dataModel);
 
         if (!$validationResult->isValid()) {

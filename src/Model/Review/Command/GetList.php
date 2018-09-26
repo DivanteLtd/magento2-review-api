@@ -84,7 +84,7 @@ class GetList implements GetListInterface
         /** @var Collection $collection */
         $collection = $this->reviewCollectionFactory->create();
         $collection->addStoreData();
-        $collection->addStoreFilter($this->storeManager->getStore()->getId());
+        $collection->addStoreFilter($this->getStoreId());
 
         if (null === $searchCriteria) {
             $searchCriteria = $this->searchCriteriaBuilder->create();
@@ -113,9 +113,19 @@ class GetList implements GetListInterface
         $data = [];
 
         foreach ($items as $item) {
-            $data[] = $this->toDataModelConverter->toDataModel($item);
+            $dataModel = $this->toDataModelConverter->toDataModel($item);
+            $dataModel->setStoreId($this->getStoreId());
+            $data[] = $dataModel;
         }
 
         return $data;
+    }
+
+    /**
+     * @return int
+     */
+    private function getStoreId()
+    {
+        return $this->storeManager->getStore()->getId();
     }
 }

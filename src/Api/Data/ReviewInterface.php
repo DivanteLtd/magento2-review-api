@@ -23,6 +23,7 @@ interface ReviewInterface
      */
     const ENTITY_PK_VALUE = 'entity_pk_value';
     const STORES = 'stores';
+    const STORE_ID = 'store_id';
 
     const CUSTOMER_ID = 'customer_id';
     const NICKNAME = 'nickname';
@@ -210,6 +211,20 @@ interface ReviewInterface
     public function getEntityPkValue();
 
     /**
+     * Store id in which review was added
+     * @return int
+     */
+    public function getStoreId();
+
+    /**
+     * @param int $storeId
+     *
+     * @return $this
+     */
+    public function setStoreId($storeId);
+
+    /**
+     * Stores in which review is visible
      * @return int[]
      */
     public function getStores();
