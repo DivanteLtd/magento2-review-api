@@ -23,6 +23,9 @@
             <field name="customer_id">
                 <aspect name="to_review_data_object"/>
             </field>
+            <field name="store_id">
+                <aspect name="to_review_data_object"/>
+            </field>
             <field name="stores">
                 <aspect name="to_review_data_object"/>
             </field>
