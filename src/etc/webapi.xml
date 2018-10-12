@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
-    <route url="/V1/products/:sku/review" method="GET">
+    <route url="/V1/products/:sku/reviews" method="GET">
         <service class="Divante\ReviewApi\Api\GetProductReviewsInterface" method="execute"/>
         <resources>
             <resource ref="Magento_Review::reviews_all"/>

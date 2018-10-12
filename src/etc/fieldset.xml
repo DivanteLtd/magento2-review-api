@@ -8,6 +8,9 @@
             <field name="status_id">
                 <aspect name="to_review_data_object" targetField="review_status"/>
             </field>
+            <field name="entity_pk_value">
+                <aspect name="to_review_data_object"/>
+            </field>
             <field name="detail">
                 <aspect name="to_review_data_object"/>
             </field>

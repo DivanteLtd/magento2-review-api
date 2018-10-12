@@ -95,7 +95,6 @@ class ToDataModel
         );
 
         $reviewDataObject->setReviewType($this->getReviewType($productReview));
-        $reviewDataObject->setEntityPkValue($productReview->getEntityId());
         $reviewDataObject->setReviewEntity(\Magento\Review\Model\Review::ENTITY_PRODUCT_CODE);
         $ratings = $this->getRatings($productReview);
         $reviewDataObject->setRatings($ratings);
