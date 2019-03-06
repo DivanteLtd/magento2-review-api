@@ -82,9 +82,11 @@ class GetList implements GetListInterface
     public function execute(SearchCriteriaInterface $searchCriteria = null): ReviewSearchResultInterface
     {
         /** @var Collection $collection */
-        $collection = $this->reviewCollectionFactory->create();
-        $collection->addStoreData();
-        $collection->addStoreFilter($this->getStoreId());
+        $collection = $this->reviewCollectionFactory->create()
+          ->addStatusFilter(
+            \Magento\Review\Model\Review::STATUS_APPROVED
+          )->addStoreData()
+          ->addStoreFilter($this->getStoreId())->addRateVotes();
 
         if (null === $searchCriteria) {
             $searchCriteria = $this->searchCriteriaBuilder->create();

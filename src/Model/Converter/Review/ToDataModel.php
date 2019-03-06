@@ -154,9 +154,7 @@ class ToDataModel
     {
         if (null === $this->ratingCollection) {
             /** @var RatingCollection $ratingCollection */
-            $ratingCollection = $this->ratingsFactory->create()
-                ->addEntityFilter('product')
-                ->setPositionOrder()->load();
+            $ratingCollection = $this->ratingsFactory->create()->addEntityFilter('product')->setPositionOrder()->load();
 
             $this->ratingCollection = $ratingCollection;
         }
