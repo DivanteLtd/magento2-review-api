@@ -14,7 +14,6 @@ use Magento\Review\Model\ResourceModel\Review as ReviewResource;
 use Divante\ReviewApi\Validation\ValidationException;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
 use \Magento\Store\Model\StoreManagerInterface;
-use \Magento\Review\Model\RatingFactory;
 
 /**
  * Class Save
@@ -48,11 +47,6 @@ class Save implements SaveInterface
     private $storeManager;
 
     /**
-     * @var RatingFactory
-     */
-    private $ratingFactory;
-
-    /**
      * Save constructor.
      *
      * @param ReviewValidatorInterface $reviewValidator
@@ -66,15 +60,13 @@ class Save implements SaveInterface
         ToModel $toModelConverter,
         ToDataModel $toDataModelConvert,
         StoreManagerInterface $storeManager,
-        ReviewResource $reviewResource,
-        RatingFactory $ratingFactory
+        ReviewResource $reviewResource
     ) {
         $this->reviewValidator = $reviewValidator;
         $this->toDataModelConverter = $toDataModelConvert;
         $this->toModelConverter = $toModelConverter;
         $this->reviewResource = $reviewResource;
         $this->storeManager = $storeManager;
-        $this->ratingFactory = $ratingFactory;
     }
 
     /**
@@ -103,14 +95,6 @@ class Save implements SaveInterface
 
         $this->reviewResource->save($model);
         $this->reviewResource->load($model, $model->getId());
-
-        $ratings = $dataModel->getRatings();
-        foreach ($ratings as $rating) {
-          $this->ratingFactory->create()
-            ->setRatingId($rating->getId())
-            ->setReviewId($model->getId())
-            ->addOptionVote( $rating->getValue(), $model->getEntityPkValue() );
-        }
 
         return $this->toDataModelConverter->toDataModel($model);
     }
