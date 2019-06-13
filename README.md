@@ -23,7 +23,7 @@ Module allow:
 To install this module please use composer dependency manager. In Your Magento2 folder please do execute:
 
 ```bash
-config repositories.divante vcs https://github.com/DivanteLtd/magento2-review-api.git
+composer config repositories.divante-review vcs https://github.com/DivanteLtd/magento2-review-api.git
 composer require divante/magento2-review-api:dev-master
 php bin/magento setup:upgrade 
 ```
