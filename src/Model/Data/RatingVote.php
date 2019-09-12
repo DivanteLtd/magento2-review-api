@@ -38,7 +38,7 @@ class RatingVote extends AbstractSimpleObject implements RatingVoteInterface
      */
     public function getReviewId()
     {
-        return $this->_get(self::KEY_ID);
+        return $this->_get(self::KEY_REVIEW_ID);
     }
 
     /**
