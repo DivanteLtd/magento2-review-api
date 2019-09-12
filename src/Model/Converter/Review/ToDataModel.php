@@ -119,7 +119,7 @@ class ToDataModel
         if (null === $ratingVotesForProduct) {
             /** @var VoteCollection $ratingVotesForProduct */
             $ratingVotesForProduct = $this->voteCollectionFactory->create()
-                ->setEntityPkFilter($productReview->getEntityId())
+                ->setEntityPkFilter($productReview->getData('entity_pk_value'))
                 ->load();
         }
 
