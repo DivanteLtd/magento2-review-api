@@ -4,8 +4,8 @@ This module implement WebAPI for product reviews (partially)
 
 Module allow:
 - Get one review 
-- Create review (without ratings)
-- Update review (without ratings)
+- Create review with ratings
+- Update review with ratings
 - Search reviews
 - Get product reviews
 
@@ -31,5 +31,3 @@ php bin/magento setup:upgrade
 ### Compatibility
 Module was tested on Magento 2.2.0
 
-### TODO
-Create/Save full review (with ratings)
