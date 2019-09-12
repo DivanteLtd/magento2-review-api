@@ -17,7 +17,6 @@ use Magento\Framework\Api\DataObjectHelper;
  */
 class RatingVote
 {
-
     /**
      * @var RatingDataFactory
      */

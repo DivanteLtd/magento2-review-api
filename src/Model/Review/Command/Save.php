@@ -13,14 +13,16 @@ use Divante\ReviewApi\Model\Converter\Review\ToDataModel;
 use Magento\Review\Model\ResourceModel\Review as ReviewResource;
 use Divante\ReviewApi\Validation\ValidationException;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
-use \Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Review\Model\RatingFactory;
+use Magento\Review\Model\Rating;
+use Magento\Review\Model\ResourceModel\Rating as RatingResource;
 
 /**
  * Class Save
  */
 class Save implements SaveInterface
 {
-
     /**
      * @var ToModel
      */
@@ -47,6 +49,16 @@ class Save implements SaveInterface
     private $storeManager;
 
     /**
+     * @var RatingFactory
+     */
+    private $ratingFactory;
+
+    /**
+     * @var RatingResource
+     */
+    private $ratingResource;
+
+    /**
      * Save constructor.
      *
      * @param ReviewValidatorInterface $reviewValidator
@@ -54,23 +66,31 @@ class Save implements SaveInterface
      * @param ToDataModel $toDataModelConvert
      * @param StoreManagerInterface $storeManager
      * @param ReviewResource $reviewResource
+     * @param RatingFactory $ratingFactory
+     * @param RatingResource $ratingResource
      */
     public function __construct(
         ReviewValidatorInterface $reviewValidator,
         ToModel $toModelConverter,
         ToDataModel $toDataModelConvert,
         StoreManagerInterface $storeManager,
-        ReviewResource $reviewResource
+        ReviewResource $reviewResource,
+        RatingFactory $ratingFactory,
+        RatingResource $ratingResource
     ) {
         $this->reviewValidator = $reviewValidator;
         $this->toDataModelConverter = $toDataModelConvert;
         $this->toModelConverter = $toModelConverter;
         $this->reviewResource = $reviewResource;
         $this->storeManager = $storeManager;
+        $this->ratingFactory = $ratingFactory;
+        $this->ratingResource = $ratingResource;
     }
 
     /**
      * @inheritdoc
+     *
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
     public function execute($dataModel)
     {
@@ -94,6 +114,17 @@ class Save implements SaveInterface
         $model = $this->toModelConverter->toModel($dataModel);
 
         $this->reviewResource->save($model);
+
+        $reviewRatings = $dataModel->getRatings() ?? [];
+        foreach ($reviewRatings as $ratingVote) {
+            /** @var Rating $rating */
+            $rating = $this->ratingFactory->create();
+            $rating->setRatingId($ratingVote->getId())
+                ->setReviewId($model->getId())
+                ->addOptionVote($ratingVote->getValue(), $model->getEntityPkValue());
+            $this->ratingResource->save($rating);
+        }
+
         $this->reviewResource->load($model, $model->getId());
 
         return $this->toDataModelConverter->toDataModel($model);
