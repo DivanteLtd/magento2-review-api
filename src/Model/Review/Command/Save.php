@@ -14,9 +14,7 @@ use Magento\Review\Model\ResourceModel\Review as ReviewResource;
 use Divante\ReviewApi\Validation\ValidationException;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Review\Model\RatingFactory;
-use Magento\Review\Model\Rating;
-use Magento\Review\Model\ResourceModel\Rating as RatingResource;
+use Divante\ReviewApi\Model\Review\Rating\SaveHandler;
 
 /**
  * Class Save
@@ -49,14 +47,9 @@ class Save implements SaveInterface
     private $storeManager;
 
     /**
-     * @var RatingFactory
+     * @var SaveHandler
      */
-    private $ratingFactory;
-
-    /**
-     * @var RatingResource
-     */
-    private $ratingResource;
+    private $ratingSaveHandler;
 
     /**
      * Save constructor.
@@ -66,8 +59,7 @@ class Save implements SaveInterface
      * @param ToDataModel $toDataModelConvert
      * @param StoreManagerInterface $storeManager
      * @param ReviewResource $reviewResource
-     * @param RatingFactory $ratingFactory
-     * @param RatingResource $ratingResource
+     * @param SaveHandler $ratingSaveHandler
      */
     public function __construct(
         ReviewValidatorInterface $reviewValidator,
@@ -75,16 +67,14 @@ class Save implements SaveInterface
         ToDataModel $toDataModelConvert,
         StoreManagerInterface $storeManager,
         ReviewResource $reviewResource,
-        RatingFactory $ratingFactory,
-        RatingResource $ratingResource
+        SaveHandler $ratingSaveHandler
     ) {
         $this->reviewValidator = $reviewValidator;
         $this->toDataModelConverter = $toDataModelConvert;
         $this->toModelConverter = $toModelConverter;
         $this->reviewResource = $reviewResource;
         $this->storeManager = $storeManager;
-        $this->ratingFactory = $ratingFactory;
-        $this->ratingResource = $ratingResource;
+        $this->ratingSaveHandler = $ratingSaveHandler;
     }
 
     /**
@@ -114,18 +104,14 @@ class Save implements SaveInterface
         $model = $this->toModelConverter->toModel($dataModel);
 
         $this->reviewResource->save($model);
+        $this->reviewResource->load($model, $model->getId());
 
-        $reviewRatings = $dataModel->getRatings() ?? [];
-        foreach ($reviewRatings as $ratingVote) {
-            /** @var Rating $rating */
-            $rating = $this->ratingFactory->create();
-            $rating->setRatingId($ratingVote->getId())
-                ->setReviewId($model->getId())
-                ->addOptionVote($ratingVote->getValue(), $model->getEntityPkValue());
-            $this->ratingResource->save($rating);
+        if (null === $dataModel->getStoreId()) {
+            $dataModel->setStoreId($model->getStoreId());
         }
 
-        $this->reviewResource->load($model, $model->getId());
+        $dataModel->setId($model->getId());
+        $this->ratingSaveHandler->execute($dataModel);
 
         return $this->toDataModelConverter->toDataModel($model);
     }

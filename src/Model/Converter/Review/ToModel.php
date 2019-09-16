@@ -59,7 +59,7 @@ class ToModel
      * @return Review
      * @throws NoSuchEntityException
      */
-    public function toModel(ReviewData $dataModel)
+    public function toModel(ReviewData $dataModel): Review
     {
         $reviewId = $dataModel->getId();
 
