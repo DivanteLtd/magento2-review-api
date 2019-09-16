@@ -93,6 +93,7 @@ class GetList implements GetListInterface
         }
 
         $collection->load();
+        $collection->addRateVotes();
 
         /** @var ReviewSearchResultInterface $searchResult */
         $searchResult = $this->reviewSearchResultsFactory->create();

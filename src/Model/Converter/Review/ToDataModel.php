@@ -83,7 +83,7 @@ class ToDataModel
      *
      * @return ReviewInterface
      */
-    public function toDataModel($productReview)
+    public function toDataModel($productReview): ReviewInterface
     {
         /** @var ReviewInterface $reviewDataObject */
         $reviewDataObject = $this->reviewFactory->create();
@@ -103,40 +103,44 @@ class ToDataModel
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product $productReview
+     * @param \Magento\Catalog\Model\Product|\Magento\Review\Model\Review $productReview
      *
      * @return array
      */
-    private function getRatings($productReview)
+    private function getRatings($productReview): array
     {
         $ratings = [];
+        $storeId = (int)$productReview->getStoreId();
 
         /**
-         * @var VoteCollection $ratingVotesForProduct
+         * @var VoteCollection $ratingsVotes
          */
-        $ratingVotesForProduct = $productReview->getRatingVotes();
+        $ratingsVotes = $productReview->getRatingVotes();
 
-        if (null === $ratingVotesForProduct) {
+        if (null === $ratingsVotes) {
             /** @var VoteCollection $ratingVotesForProduct */
-            $ratingVotesForProduct = $this->voteCollectionFactory->create()
+            $ratingsVotes = $this->voteCollectionFactory->create()
+                ->setReviewFilter($productReview->getReviewId())
+                ->setStoreFilter($storeId)
                 ->setEntityPkFilter($productReview->getData('entity_pk_value'))
                 ->load();
+            $reviewRatings = $ratingsVotes->getItems();
+        } else {
+            $reviewRatings = $ratingsVotes->getItemsByColumnValue('review_id', $productReview->getReviewId());
         }
 
-        if ($ratingVotesForProduct) {
-            $reviewRatings = $ratingVotesForProduct->getItemsByColumnValue('review_id', $productReview->getReviewId());
+        if (count($reviewRatings)) {
             /** @var  $ratingCollection */
-            $ratingCollection = $this->getRatingCollection();
+            $ratingCollection = $this->getRatingCollection($storeId);
 
             foreach ($reviewRatings as $ratingVote) {
                 $rating = $ratingCollection->getItemByColumnValue('rating_id', $ratingVote->getRatingId());
 
                 if ($rating) {
                     $ratingData = [
-                        'review_id' => $productReview->getReviewId(),
                         'value' => $ratingVote->getValue(),
-                        'id' => $ratingVote->getId(),
-                        'attribute_code' => $rating->getRatingCode(),
+                        'vote_id' => $ratingVote->getVoteId(),
+                        'rating_name' => $rating->getRatingCode(),
                     ];
 
                     $ratings[] = $this->ratingConverter->arrayToDataModel($ratingData);
@@ -146,16 +150,17 @@ class ToDataModel
 
         return $ratings;
     }
-
     /**
+     * @param int $storeId
      * @return RatingCollection
      */
-    private function getRatingCollection()
+    private function getRatingCollection(int $storeId): RatingCollection
     {
         if (null === $this->ratingCollection) {
             /** @var RatingCollection $ratingCollection */
             $ratingCollection = $this->ratingsFactory->create()
                 ->addEntityFilter('product')
+                ->setStoreFilter($storeId)
                 ->setPositionOrder()->load();
 
             $this->ratingCollection = $ratingCollection;
@@ -169,7 +174,7 @@ class ToDataModel
      *
      * @return string
      */
-    public function getReviewType($productReview)
+    public function getReviewType($productReview): string
     {
         $customerId = $productReview->getCustomerId();
 

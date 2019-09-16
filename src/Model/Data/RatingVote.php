@@ -20,49 +20,33 @@ class RatingVote extends AbstractSimpleObject implements RatingVoteInterface
     /**
      * @inheritdoc
      */
-    public function getId()
+    public function getVoteId()
     {
-        return $this->_get(self::KEY_ID);
+        return $this->_get(self::KEY_VOTE_ID);
     }
 
     /**
      * @inheritdoc
      */
-    public function setId($id)
+    public function setVoteId($id)
     {
-        return $this->setData(self::KEY_ID, $id);
+        return $this->setData(self::KEY_VOTE_ID, $id);
     }
 
     /**
      * @inheritdoc
      */
-    public function getReviewId()
+    public function getRatingName()
     {
-        return $this->_get(self::KEY_REVIEW_ID);
+        return $this->_get(self::KEY_RATING_NAME);
     }
 
     /**
      * @inheritdoc
      */
-    public function setReviewId($reviewId)
+    public function setRatingName($attributeCode)
     {
-        return $this->setData(self::KEY_REVIEW_ID, $reviewId);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAttributeCode()
-    {
-        return $this->_get(self::KEY_ATTRIBUTE_CODE);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setAttributeCode($attributeCode)
-    {
-        return $this->setData(self::KEY_ATTRIBUTE_CODE, $attributeCode);
+        return $this->setData(self::KEY_RATING_NAME, $attributeCode);
     }
 
     /**
