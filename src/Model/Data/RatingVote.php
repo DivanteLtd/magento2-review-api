@@ -22,7 +22,7 @@ class RatingVote extends AbstractSimpleObject implements RatingVoteInterface
      */
     public function getVoteId()
     {
-        return $this->_get(self::KEY_VOTE_ID);
+        return (int)$this->_get(self::KEY_VOTE_ID);
     }
 
     /**
@@ -31,6 +31,22 @@ class RatingVote extends AbstractSimpleObject implements RatingVoteInterface
     public function setVoteId($id)
     {
         return $this->setData(self::KEY_VOTE_ID, $id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRatingId()
+    {
+        return (int)$this->_get(self::KEY_RATING_ID);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRatingId($ratingId)
+    {
+        return $this->setData(self::KEY_RATING_ID, $ratingId);
     }
 
     /**
@@ -63,5 +79,21 @@ class RatingVote extends AbstractSimpleObject implements RatingVoteInterface
     public function setValue($value)
     {
         return $this->setData(self::KEY_VALUE, $value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPercent()
+    {
+        return (int)$this->_get(self::KEY_PERCENT);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPercent($percent)
+    {
+        return $this->setData(self::KEY_PERCENT, $percent);
     }
 }

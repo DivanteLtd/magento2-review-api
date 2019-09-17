@@ -139,7 +139,9 @@ class ToDataModel
                 if ($rating) {
                     $ratingData = [
                         'value' => $ratingVote->getValue(),
+                        'percent' => $ratingVote->getPercent(),
                         'vote_id' => $ratingVote->getVoteId(),
+                        'rating_id' => $rating->getId(),
                         'rating_name' => $rating->getRatingCode(),
                     ];
 
