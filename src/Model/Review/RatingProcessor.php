@@ -25,7 +25,7 @@ class RatingProcessor
      *
      * @var RatingsFactory
      */
-    private $ratingsFactory;
+    private $ratingsCollectionFactory;
 
     /**
      * @var RatingOptionCollectionFactory
@@ -52,7 +52,7 @@ class RatingProcessor
         RatingsFactory $ratingsFactory,
         RatingOptionCollectionFactory $ratingOptionFactory
     ) {
-        $this->ratingsFactory = $ratingsFactory;
+        $this->ratingsCollectionFactory = $ratingsFactory;
         $this->ratingOptionFactory = $ratingOptionFactory;
     }
 
@@ -65,8 +65,10 @@ class RatingProcessor
     public function getRatingIdByName(string $ratingName, int $storeId): ?int
     {
         if (!isset($this->ratings[$storeId])) {
-            $collection = $this->ratingsFactory->create();
+            $collection = $this->ratingsCollectionFactory->create();
             $collection->setStoreFilter($storeId);
+            $collection->addRatingPerStoreName($storeId);
+
             $this->ratings[$storeId] = $this->toOptionHash($collection, 'rating_code');
         }
 

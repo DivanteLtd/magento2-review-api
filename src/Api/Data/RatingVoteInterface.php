@@ -14,15 +14,24 @@ namespace Divante\ReviewApi\Api\Data;
 interface RatingVoteInterface
 {
     const KEY_VOTE_ID = 'vote_id';
+    const KEY_RATING_ID = 'rating_id';
     const KEY_VALUE = 'value';
+    const KEY_PERCENT = 'percent';
     const KEY_RATING_NAME = 'rating_name';
 
     /**
      * Get rating vote id.
      *
-     * @return int|null
+     * @return int
      */
     public function getVoteId();
+
+    /**
+     * Get rating id
+     *
+     * @return int
+     */
+    public function getRatingId();
 
     /**
      * Get rating code.
@@ -30,6 +39,11 @@ interface RatingVoteInterface
      * @return string
      */
     public function getRatingName();
+
+    /**
+     * @return int
+     */
+    public function getPercent();
 
     /**
      * Get rating value.
@@ -40,20 +54,33 @@ interface RatingVoteInterface
     public function getValue();
 
     /**
+     * @param int $percent
+     * @return RatingVoteInterface
+     */
+    public function setPercent($percent);
+
+    /**
      * Set rating id.
      *
      * @param int|null $id
      *
-     * @return void
+     * @return RatingVoteInterface
      */
     public function setVoteId($id);
+
+    /**
+     * @param int RatingVoteInterface
+     *
+     * @return mixed
+     */
+    public function setRatingId($ratingRatingId);
 
     /**
      * Set rating code.
      *
      * @param string $attributeCode
      *
-     * @return void
+     * @return RatingVoteInterface
      */
     public function setRatingName($attributeCode);
 
@@ -61,7 +88,7 @@ interface RatingVoteInterface
      * Set rating value.
      *
      * @param int $value
-     * @return void
+     * @return RatingVoteInterface
      */
     public function setValue($value);
 }
