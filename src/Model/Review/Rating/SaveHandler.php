@@ -12,8 +12,10 @@ use Divante\ReviewApi\Api\Data\ReviewInterface;
 use Divante\ReviewApi\Model\Review\RatingProcessor;
 use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Magento\Review\Model\Rating;
+use Magento\Review\Model\Review as ReviewModel;
 use Magento\Review\Model\RatingFactory;
 use Magento\Review\Model\ResourceModel\Rating\Option\Vote\Collection;
+use Magento\Review\Model\ResourceModel\Review;
 use Magento\Review\Model\ResourceModel\Rating\Option\Vote\CollectionFactory;
 
 /**
@@ -43,15 +45,20 @@ class SaveHandler implements ExtensionInterface
      * @param CollectionFactory $collectionFactory
      * @param RatingFactory $ratingFactory
      * @param RatingProcessor $getRatingByCode
+     * @param \Magento\Review\Model\ResourceModel\Review $reviewResource
      */
     public function __construct(
         CollectionFactory $collectionFactory,
         RatingFactory $ratingFactory,
-        RatingProcessor $getRatingByCode
+        RatingProcessor $getRatingByCode,
+        \Magento\Review\Model\ResourceModel\Review $reviewResource,
+        ReviewModel $reviewModel
     ) {
         $this->ratingProcessor = $getRatingByCode;
         $this->ratingFactory = $ratingFactory;
         $this->voteCollectionFactory = $collectionFactory;
+        $this->reviewResource = $reviewResource;
+        $this->reviewModel = $reviewModel;
     }
 
     /**
@@ -83,17 +90,20 @@ class SaveHandler implements ExtensionInterface
 
             if ($vote) {
                 $this->ratingFactory->create()
-                    ->setVoteId($vote->getId())
-                    ->setReviewId($reviewId)
-                    ->updateOptionVote($optionId);
+                                    ->setVoteId($vote->getId())
+                                    ->setReviewId($reviewId)
+                                    ->updateOptionVote($optionId);
             } else {
                 /** @var Rating $rating */
                 $this->ratingFactory->create()
-                    ->setRatingId($ratingId)
-                    ->setReviewId($entity->getId())
-                    ->addOptionVote($optionId, $entity->getEntityPkValue());
+                                    ->setRatingId($ratingId)
+                                    ->setReviewId($entity->getId())
+                                    ->addOptionVote($optionId, $entity->getEntityPkValue());
             }
         }
+        
+        $reviewObject = $this->reviewModel->load($reviewId);
+        $this->reviewResource->aggregate($reviewObject);
     }
 
     /**
@@ -106,9 +116,9 @@ class SaveHandler implements ExtensionInterface
         /** @var Collection $collection */
         $collection = $this->voteCollectionFactory->create();
         $collection->setReviewFilter($reviewId)
-            ->addOptionInfo()
-            ->load()
-            ->addRatingOptions();
+                   ->addOptionInfo()
+                   ->load()
+                   ->addRatingOptions();
 
         return $collection;
     }
