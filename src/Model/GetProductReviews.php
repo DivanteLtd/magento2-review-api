@@ -59,6 +59,7 @@ class GetProductReviews implements GetProductReviewsInterface
 
         /** @var \Magento\Catalog\Model\Product $productReview */
         foreach ($collection as $productReview) {
+            $productReview->setCreatedAt($productReview->getReviewCreatedAt());
             $reviewDataObject = $this->reviewConverter->toDataModel($productReview);
             $reviews[] = $reviewDataObject;
         }
