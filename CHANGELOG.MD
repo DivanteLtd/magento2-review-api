@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+## [1.3.0]
+
 ### Fixed
 - Get product reviews - return correct date for `created_at` field. ([#24](https://github.com/DivanteLtd/magento2-review-api/issues/24))  
 
