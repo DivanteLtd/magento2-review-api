@@ -13,7 +13,7 @@ use Divante\ReviewApi\Api\Data\ReviewInterfaceFactory;
 use Divante\ReviewApi\Model\Converter\RatingVote;
 use Magento\Framework\DataObject\Copy as ObjectCopyService;
 use Magento\Review\Model\ResourceModel\Rating\Collection as RatingCollection;
-use Magento\Review\Model\ResourceModel\Rating\CollectionFactory as RatingsFactory;
+use Magento\Review\Model\ResourceModel\Rating\CollectionFactory as RatingsCollectionFactory;
 use Magento\Review\Model\ResourceModel\Rating\Option\Vote\Collection as VoteCollection;
 use Magento\Review\Model\ResourceModel\Rating\Option\Vote\CollectionFactory as VoteCollectionFactory;
 use Magento\Store\Model\Store;
@@ -36,9 +36,9 @@ class ToDataModel
     /**
      * Rating resource model
      *
-     * @var RatingsFactory
+     * @var RatingsCollectionFactory
      */
-    private $ratingsFactory;
+    private $ratingsCollectionFactory;
 
     /**
      * @var ObjectCopyService
@@ -60,19 +60,19 @@ class ToDataModel
      *
      * @param RatingVote $ratingConverter
      * @param VoteCollectionFactory $voteCollectionFactory
-     * @param RatingsFactory $ratingsFactory
+     * @param RatingsCollectionFactory $ratingsFactory
      * @param ReviewInterfaceFactory $reviewInterfaceFactory
      * @param ObjectCopyService $objectCopyService
      */
     public function __construct(
         RatingVote $ratingConverter,
         VoteCollectionFactory $voteCollectionFactory,
-        RatingsFactory $ratingsFactory,
+        RatingsCollectionFactory $ratingsFactory,
         ReviewInterfaceFactory $reviewInterfaceFactory,
         ObjectCopyService $objectCopyService
     ) {
         $this->reviewFactory = $reviewInterfaceFactory;
-        $this->ratingsFactory = $ratingsFactory;
+        $this->ratingsCollectionFactory = $ratingsFactory;
         $this->ratingConverter = $ratingConverter;
         $this->objectCopyService = $objectCopyService;
         $this->voteCollectionFactory = $voteCollectionFactory;
@@ -139,7 +139,9 @@ class ToDataModel
                 if ($rating) {
                     $ratingData = [
                         'value' => $ratingVote->getValue(),
+                        'percent' => $ratingVote->getPercent(),
                         'vote_id' => $ratingVote->getVoteId(),
+                        'rating_id' => $rating->getId(),
                         'rating_name' => $rating->getRatingCode(),
                     ];
 
@@ -158,9 +160,10 @@ class ToDataModel
     {
         if (null === $this->ratingCollection) {
             /** @var RatingCollection $ratingCollection */
-            $ratingCollection = $this->ratingsFactory->create()
+            $ratingCollection = $this->ratingsCollectionFactory->create()
                 ->addEntityFilter('product')
                 ->setStoreFilter($storeId)
+                ->addRatingPerStoreName($storeId)
                 ->setPositionOrder()->load();
 
             $this->ratingCollection = $ratingCollection;

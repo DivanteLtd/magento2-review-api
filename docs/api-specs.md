@@ -53,14 +53,18 @@ Create review without ratings
   "nickname": "Nickname",
   "ratings": [
     {
-      "vote_id": 115,
+      "vote_id": 131,
+      "rating_id": 4,
       "rating_name": "Rating",
+      "percent": 20,
       "value": 1
     },
     {
-      "vote_id": 116,
+      "vote_id": 132,
+      "rating_id": 1,
       "rating_name": "Quality",
-      "value": 1
+      "percent": 60,
+      "value": 3
     }
   ],
   "review_entity": "product",
