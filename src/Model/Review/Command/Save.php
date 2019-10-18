@@ -112,6 +112,8 @@ class Save implements SaveInterface
 
         $dataModel->setId($model->getId());
         $this->ratingSaveHandler->execute($dataModel);
+        
+        $this->reviewResource->aggregate($model);
 
         return $this->toDataModelConverter->toDataModel($model);
     }
