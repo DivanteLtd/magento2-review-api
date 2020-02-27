@@ -6,27 +6,27 @@
  * @license See LICENSE_DIVANTE.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Divante\ReviewApi\Model\Converter\Review;
 
 use Divante\ReviewApi\Api\Data\ReviewInterface;
 use Divante\ReviewApi\Api\Data\ReviewInterfaceFactory;
-use Divante\ReviewApi\Model\Converter\RatingVote;
+use Divante\ReviewApi\Model\Review\ReviewTypeResolverInterface;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\DataObject\Copy as ObjectCopyService;
-use Magento\Review\Model\ResourceModel\Rating\Collection as RatingCollection;
-use Magento\Review\Model\ResourceModel\Rating\CollectionFactory as RatingsCollectionFactory;
-use Magento\Review\Model\ResourceModel\Rating\Option\Vote\Collection as VoteCollection;
-use Magento\Review\Model\ResourceModel\Rating\Option\Vote\CollectionFactory as VoteCollectionFactory;
-use Magento\Store\Model\Store;
+use Magento\Review\Model\Review;
+use Divante\ReviewApi\Model\Review\Rating\LoadHandler as RatingLoadHandler;
 
 /**
- * Class Review
+ * Class ToDataModel convert Review Model to Review Data Object
  */
 class ToDataModel
 {
     /**
-     * @var RatingVote
+     * @var RatingLoadHandler
      */
-    private $ratingConverter;
+    private $ratingLoadHandler;
 
     /**
      * @var ReviewInterfaceFactory
@@ -34,56 +34,59 @@ class ToDataModel
     private $reviewFactory;
 
     /**
-     * Rating resource model
-     *
-     * @var RatingsCollectionFactory
-     */
-    private $ratingsCollectionFactory;
-
-    /**
      * @var ObjectCopyService
      */
     private $objectCopyService;
 
     /**
-     * @var RatingCollection
+     * @var ReviewTypeResolverInterface
      */
-    private $ratingCollection;
+    private $reviewTypeResolver;
 
     /**
-     * @var VoteCollectionFactory
-     */
-    private $voteCollectionFactory;
-
-    /**
-     * Review constructor.
+     * ToDataModel constructor.
      *
-     * @param RatingVote $ratingConverter
-     * @param VoteCollectionFactory $voteCollectionFactory
-     * @param RatingsCollectionFactory $ratingsFactory
+     * @param RatingLoadHandler $ratingLoadHandler
      * @param ReviewInterfaceFactory $reviewInterfaceFactory
+     * @param ReviewTypeResolverInterface $reviewTypeResolver
      * @param ObjectCopyService $objectCopyService
      */
     public function __construct(
-        RatingVote $ratingConverter,
-        VoteCollectionFactory $voteCollectionFactory,
-        RatingsCollectionFactory $ratingsFactory,
+        RatingLoadHandler $ratingLoadHandler,
         ReviewInterfaceFactory $reviewInterfaceFactory,
+        ReviewTypeResolverInterface $reviewTypeResolver,
         ObjectCopyService $objectCopyService
     ) {
         $this->reviewFactory = $reviewInterfaceFactory;
-        $this->ratingsCollectionFactory = $ratingsFactory;
-        $this->ratingConverter = $ratingConverter;
         $this->objectCopyService = $objectCopyService;
-        $this->voteCollectionFactory = $voteCollectionFactory;
+        $this->reviewTypeResolver = $reviewTypeResolver;
+        $this->ratingLoadHandler = $ratingLoadHandler;
     }
 
     /**
-     * @param \Magento\Catalog\Model\Product|\Magento\Review\Model\Review $productReview
+     * Convert Review to Data Object
+     *
+     * @param Product|Review $productReview
      *
      * @return ReviewInterface
      */
     public function toDataModel($productReview): ReviewInterface
+    {
+        $reviewDataObject = $this->createReviewDataObject($productReview);
+        $ratings = $this->ratingLoadHandler->execute($productReview);
+        $reviewDataObject->setRatings($ratings);
+
+        return $reviewDataObject;
+    }
+
+    /**
+     * Create Review Data Object
+     *
+     * @param Product|Review $productReview
+     *
+     * @return ReviewInterface
+     */
+    private function createReviewDataObject($productReview): ReviewInterface
     {
         /** @var ReviewInterface $reviewDataObject */
         $reviewDataObject = $this->reviewFactory->create();
@@ -93,104 +96,9 @@ class ToDataModel
             $productReview,
             $reviewDataObject
         );
-
-        $reviewDataObject->setReviewType($this->getReviewType($productReview));
-        $reviewDataObject->setReviewEntity(\Magento\Review\Model\Review::ENTITY_PRODUCT_CODE);
-        $ratings = $this->getRatings($productReview);
-        $reviewDataObject->setRatings($ratings);
+        $reviewDataObject->setReviewType($this->reviewTypeResolver->getReviewType($productReview));
+        $reviewDataObject->setReviewEntity(Review::ENTITY_PRODUCT_CODE);
 
         return $reviewDataObject;
-    }
-
-    /**
-     * @param \Magento\Catalog\Model\Product|\Magento\Review\Model\Review $productReview
-     *
-     * @return array
-     */
-    private function getRatings($productReview): array
-    {
-        $ratings = [];
-        $storeId = (int)$productReview->getStoreId();
-
-        /**
-         * @var VoteCollection $ratingsVotes
-         */
-        $ratingsVotes = $productReview->getRatingVotes();
-
-        if (null === $ratingsVotes) {
-            /** @var VoteCollection $ratingVotesForProduct */
-            $ratingsVotes = $this->voteCollectionFactory->create()
-                ->setReviewFilter($productReview->getReviewId())
-                ->setStoreFilter($storeId)
-                ->setEntityPkFilter($productReview->getData('entity_pk_value'))
-                ->load();
-            $reviewRatings = $ratingsVotes->getItems();
-        } else {
-            $reviewRatings = $ratingsVotes->getItemsByColumnValue('review_id', $productReview->getReviewId());
-        }
-
-        if (count($reviewRatings)) {
-            /** @var  $ratingCollection */
-            $ratingCollection = $this->getRatingCollection($storeId);
-
-            foreach ($reviewRatings as $ratingVote) {
-                $rating = $ratingCollection->getItemByColumnValue('rating_id', $ratingVote->getRatingId());
-
-                if ($rating) {
-                    $ratingData = [
-                        'value' => $ratingVote->getValue(),
-                        'percent' => $ratingVote->getPercent(),
-                        'vote_id' => $ratingVote->getVoteId(),
-                        'rating_id' => $rating->getId(),
-                        'rating_name' => $rating->getRatingCode(),
-                    ];
-
-                    $ratings[] = $this->ratingConverter->arrayToDataModel($ratingData);
-                }
-            }
-        }
-
-        return $ratings;
-    }
-    /**
-     * @param int $storeId
-     * @return RatingCollection
-     */
-    private function getRatingCollection(int $storeId): RatingCollection
-    {
-        if (null === $this->ratingCollection) {
-            /** @var RatingCollection $ratingCollection */
-            $ratingCollection = $this->ratingsCollectionFactory->create()
-                ->addEntityFilter('product')
-                ->setStoreFilter($storeId)
-                ->addRatingPerStoreName($storeId)
-                ->setPositionOrder()->load();
-
-            $this->ratingCollection = $ratingCollection;
-        }
-
-        return $this->ratingCollection;
-    }
-
-    /**
-     * @param \Magento\Review\Model\Review $productReview
-     *
-     * @return string
-     */
-    public function getReviewType($productReview): string
-    {
-        $customerId = $productReview->getCustomerId();
-
-        if ($customerId) {
-            return ReviewInterface::REVIEW_TYPE_CUSTOMER;
-        }
-
-        $storeId = (int)$productReview->getStoreId();
-
-        if ($storeId === Store::DEFAULT_STORE_ID) {
-            return ReviewInterface::REVIEW_TYPE_ADMIN;
-        }
-
-        return ReviewInterface::REVIEW_TYPE_GUEST;
     }
 }

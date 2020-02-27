@@ -6,6 +6,8 @@
  * @license See LICENSE_DIVANTE.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Divante\ReviewApi\Model\Review\Command;
 
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
@@ -13,13 +15,13 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Review\Model\ResourceModel\Review\Collection;
 use Magento\Review\Model\ResourceModel\Review\CollectionFactory;
-use \Divante\ReviewApi\Api\Data\ReviewSearchResultInterface;
-use \Divante\ReviewApi\Api\Data\ReviewSearchResultInterfaceFactory;
+use Divante\ReviewApi\Api\Data\ReviewSearchResultInterface;
+use Divante\ReviewApi\Api\Data\ReviewSearchResultInterfaceFactory;
 use Divante\ReviewApi\Model\Converter\Review\ToDataModel;
-use \Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class GetList
+ * @inheritdoc
  */
 class GetList implements GetListInterface
 {
@@ -54,9 +56,12 @@ class GetList implements GetListInterface
     private $storeManager;
 
     /**
+     * GetList constructor.
+     *
      * @param ToDataModel $toDataModelConvert
      * @param CollectionProcessorInterface $collectionProcessor
      * @param CollectionFactory $sourceCollectionFactory
+     * @param StoreManagerInterface $storeManager
      * @param ReviewSearchResultInterfaceFactory $reviewSearchResultInterfaceFactory
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      */
@@ -78,6 +83,10 @@ class GetList implements GetListInterface
 
     /**
      * @inheritdoc
+     *
+     * @param SearchCriteriaInterface|null $searchCriteria
+     *
+     * @return ReviewSearchResultInterface
      */
     public function execute(SearchCriteriaInterface $searchCriteria = null): ReviewSearchResultInterface
     {
@@ -105,11 +114,13 @@ class GetList implements GetListInterface
     }
 
     /**
+     * Convert Review Models to Data Models
+     *
      * @param array $items
      *
      * @return array
      */
-    private function convertItemsToDataModel($items)
+    private function convertItemsToDataModel(array $items): array
     {
         $data = [];
 
@@ -123,10 +134,12 @@ class GetList implements GetListInterface
     }
 
     /**
+     * Retrive Store Id
+     *
      * @return int
      */
-    private function getStoreId()
+    private function getStoreId(): int
     {
-        return $this->storeManager->getStore()->getId();
+        return (int) $this->storeManager->getStore()->getId();
     }
 }

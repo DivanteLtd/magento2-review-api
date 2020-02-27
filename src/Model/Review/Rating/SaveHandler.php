@@ -9,19 +9,16 @@
 namespace Divante\ReviewApi\Model\Review\Rating;
 
 use Divante\ReviewApi\Api\Data\ReviewInterface;
-use Divante\ReviewApi\Model\Review\RatingProcessor;
-use Magento\Framework\EntityManager\Operation\ExtensionInterface;
 use Magento\Review\Model\Rating;
 use Magento\Review\Model\RatingFactory;
 use Magento\Review\Model\ResourceModel\Rating\Option\Vote\Collection;
 use Magento\Review\Model\ResourceModel\Rating\Option\Vote\CollectionFactory;
 
 /**
- * Class SaveHandler
+ * Review Rating data save handler
  */
-class SaveHandler implements ExtensionInterface
+class SaveHandler
 {
-
     /**
      * @var CollectionFactory
      */
@@ -33,35 +30,43 @@ class SaveHandler implements ExtensionInterface
     private $ratingFactory;
 
     /**
-     * @var RatingProcessor
+     * @var GetOptionIdByRatingIdAndValue
      */
     private $ratingProcessor;
+
+    /**
+     * @var GetRatingIdByName
+     */
+    private $getRatingIdByCode;
 
     /**
      * SaveHandler constructor.
      *
      * @param CollectionFactory $collectionFactory
      * @param RatingFactory $ratingFactory
-     * @param RatingProcessor $getRatingByCode
+     * @param GetRatingIdByName $getRatingIdByCode
+     * @param GetOptionIdByRatingIdAndValue $getRatingByCode
      */
     public function __construct(
         CollectionFactory $collectionFactory,
         RatingFactory $ratingFactory,
-        RatingProcessor $getRatingByCode
+        GetRatingIdByName $getRatingIdByCode,
+        GetOptionIdByRatingIdAndValue $getRatingByCode
     ) {
+        $this->getRatingIdByCode = $getRatingIdByCode;
         $this->ratingProcessor = $getRatingByCode;
         $this->ratingFactory = $ratingFactory;
         $this->voteCollectionFactory = $collectionFactory;
     }
 
     /**
-     * @param object|ReviewInterface $entity
-     * @param array $arguments
+     * Save Review Rating Votes
      *
-     * @return bool|object|void
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @param ReviewInterface $entity
+     *
+     * @return void
      */
-    public function execute($entity, $arguments = [])
+    public function execute(ReviewInterface $entity)
     {
         $storeId = $entity->getStoreId();
         $reviewRatings = $entity->getRatings() ?? [];
@@ -70,33 +75,62 @@ class SaveHandler implements ExtensionInterface
 
         foreach ($reviewRatings as $ratingVote) {
             $ratingCode = $ratingVote->getRatingName();
-
-            $ratingId = $this->ratingProcessor->getRatingIdByName($ratingCode, $storeId);
+            $ratingId = $this->getRatingIdByCode->execute($ratingCode, $storeId);
 
             if (!$ratingId) {
                 /*TODO Throw error if given rating is not available in store*/
                 continue;
             }
 
-            $optionId = $this->ratingProcessor->getOptionIdByRatingIdAndValue($ratingId, $ratingVote->getValue());
+            $optionId = $this->ratingProcessor->execute($ratingId, $ratingVote->getValue());
             $vote = $votes->getItemByColumnValue('rating_id', $ratingId);
 
             if ($vote) {
-                $this->ratingFactory->create()
-                    ->setVoteId($vote->getId())
-                    ->setReviewId($reviewId)
-                    ->updateOptionVote($optionId);
+                $this->updateVote($vote->getId(), $reviewId, $optionId);
             } else {
-                /** @var Rating $rating */
-                $this->ratingFactory->create()
-                    ->setRatingId($ratingId)
-                    ->setReviewId($entity->getId())
-                    ->addOptionVote($optionId, $entity->getEntityPkValue());
+                $this->createRatingVote($entity, $ratingId, $optionId);
             }
         }
     }
 
     /**
+     * Create Rating Vote
+     *
+     * @param ReviewInterface $entity
+     * @param int $ratingId
+     * @param int $optionId
+     *
+     * @return void
+     */
+    private function createRatingVote(ReviewInterface $entity, int $ratingId, int $optionId)
+    {
+        /** @var Rating $rating */
+        $this->ratingFactory->create()
+            ->setRatingId($ratingId)
+            ->setReviewId($entity->getId())
+            ->addOptionVote($optionId, $entity->getEntityPkValue());
+    }
+
+    /**
+     * Update Rating Vote
+     *
+     * @param int $voteId
+     * @param int $reviewId
+     * @param int $optionId
+     *
+     * @return void
+     */
+    private function updateVote(int $voteId, int $reviewId, int $optionId)
+    {
+        $this->ratingFactory->create()
+            ->setVoteId($voteId)
+            ->setReviewId($reviewId)
+            ->updateOptionVote($optionId);
+    }
+
+    /**
+     * Get Votes for Review
+     *
      * @param int $reviewId
      *
      * @return Collection

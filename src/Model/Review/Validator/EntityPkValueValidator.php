@@ -14,7 +14,7 @@ use Divante\ReviewApi\Validation\ValidationResultFactory;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
 
 /**
- * Class TitleValidator
+ * Class TitleValidator - validates review entityPkValue
  */
 class EntityPkValueValidator implements ReviewValidatorInterface
 {
@@ -32,6 +32,8 @@ class EntityPkValueValidator implements ReviewValidatorInterface
     }
 
     /**
+     * Check if Review has entity pk value
+     *
      * @param ReviewInterface $review
      *
      * @return ValidationResult
@@ -39,11 +41,10 @@ class EntityPkValueValidator implements ReviewValidatorInterface
     public function validate(ReviewInterface $review): ValidationResult
     {
         $value = (int)$review->getEntityPkValue();
+        $errors = [];
 
         if (!$value) {
             $errors[] = __('"%field" can not be empty. Add Product ID.', ['field' => ReviewInterface::ENTITY_PK_VALUE]);
-        } else {
-            $errors = [];
         }
 
         return $this->validationResultFactory->create(['errors' => $errors]);

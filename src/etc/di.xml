@@ -11,6 +11,7 @@
     <preference for="Divante\ReviewApi\Model\ReviewValidatorInterface" type="Divante\ReviewApi\Model\ReviewValidationChain"/>
 
     <preference for="Divante\ReviewApi\Api\Data\ReviewSearchResultInterface" type="Divante\ReviewApi\Model\ReviewSearchResult"/>
+    <preference for="Divante\ReviewApi\Model\Review\ReviewTypeResolverInterface" type="Divante\ReviewApi\Model\Review\ReviewTypeResolver"/>
 
     <type name="Divante\ReviewApi\Model\ReviewValidationChain">
         <arguments>

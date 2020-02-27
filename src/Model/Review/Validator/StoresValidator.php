@@ -14,7 +14,7 @@ use Divante\ReviewApi\Validation\ValidationResultFactory;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
 
 /**
- * Class TitleValidator
+ * Class TitleValidator - validates review stores
  */
 class StoresValidator implements ReviewValidatorInterface
 {
@@ -32,6 +32,8 @@ class StoresValidator implements ReviewValidatorInterface
     }
 
     /**
+     * Check if review has stores set
+     *
      * @param ReviewInterface $review
      *
      * @return ValidationResult
@@ -39,11 +41,10 @@ class StoresValidator implements ReviewValidatorInterface
     public function validate(ReviewInterface $review): ValidationResult
     {
         $value = (array)$review->getStores();
+        $errors = [];
 
         if (empty($value)) {
             $errors[] = __('"%field" can not be empty.', ['field' => ReviewInterface::STORES]);
-        } else {
-            $errors = [];
         }
 
         return $this->validationResultFactory->create(['errors' => $errors]);

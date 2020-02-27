@@ -14,7 +14,7 @@ use Divante\ReviewApi\Validation\ValidationResultFactory;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
 
 /**
- * Class TitleValidator
+ * Class TitleValidator - validates review details
  */
 class DetailValidator implements ReviewValidatorInterface
 {
@@ -32,6 +32,8 @@ class DetailValidator implements ReviewValidatorInterface
     }
 
     /**
+     * Check If review details is not empty
+     *
      * @param ReviewInterface $review
      *
      * @return ValidationResult
@@ -39,11 +41,10 @@ class DetailValidator implements ReviewValidatorInterface
     public function validate(ReviewInterface $review): ValidationResult
     {
         $value = (string)$review->getDetail();
+        $errors = [];
 
-        if ('' === trim($value)) {
+        if (trim($value) === '') {
             $errors[] = __('"%field" can not be empty.', ['field' => ReviewInterface::DETAIL]);
-        } else {
-            $errors = [];
         }
 
         return $this->validationResultFactory->create(['errors' => $errors]);

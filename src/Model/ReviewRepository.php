@@ -6,8 +6,11 @@
  * @license See LICENSE_DIVANTE.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Divante\ReviewApi\Model;
 
+use Divante\ReviewApi\Api\Data\ReviewSearchResultInterface;
 use Divante\ReviewApi\Model\Review\Command\DeleteByIdInterface;
 use Divante\ReviewApi\Model\Review\Command\GetInterface;
 use Divante\ReviewApi\Model\Review\Command\GetListInterface;
@@ -17,7 +20,7 @@ use Divante\ReviewApi\Api\Data\ReviewInterface;
 use Magento\Framework\Api\SearchCriteria;
 
 /**
- * Class ReviewRepository
+ * @inheritdoc
  */
 class ReviewRepository implements ReviewRepositoryInterface
 {
@@ -63,32 +66,54 @@ class ReviewRepository implements ReviewRepositoryInterface
 
     /**
      * @inheritdoc
+     *
+     * @param ReviewInterface $review
+     *
+     * @return ReviewInterface
+     * @throws \Divante\ReviewApi\Validation\ValidationException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function save(ReviewInterface $review)
+    public function save(ReviewInterface $review): ReviewInterface
     {
         return $this->commandSave->execute($review);
     }
 
     /**
      * @inheritdoc
+     *
+     * @param int $reviewId
+     *
+     * @return ReviewInterface
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function get($reviewId)
+    public function get(int $reviewId): ReviewInterface
     {
         return $this->commandGet->execute($reviewId);
     }
 
     /**
      * @inheritdoc
+     *
+     * @param SearchCriteria|null $searchCriteria
+     *
+     * @return ReviewSearchResultInterface
      */
-    public function getList(SearchCriteria $searchCriteria)
+    public function getList(SearchCriteria $searchCriteria = null): ReviewSearchResultInterface
     {
         return $this->commandGetList->execute($searchCriteria);
     }
 
     /**
      * @inheritdoc
+     *
+     * @param int $reviewId
+     *
+     * @return void
+     *
+     * @throws \Magento\Framework\Exception\CouldNotDeleteException
      */
-    public function deleteById($reviewId)
+    public function deleteById(int $reviewId): void
     {
         $this->commandDeleteById->execute($reviewId);
     }
