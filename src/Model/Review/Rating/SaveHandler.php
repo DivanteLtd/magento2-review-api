@@ -1,10 +1,9 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Model\Review\Rating;
 
@@ -32,7 +31,7 @@ class SaveHandler
     /**
      * @var GetOptionIdByRatingIdAndValue
      */
-    private $ratingProcessor;
+    private $getOptionIdByRatingIdAndValue;
 
     /**
      * @var GetRatingIdByName
@@ -54,7 +53,7 @@ class SaveHandler
         GetOptionIdByRatingIdAndValue $getRatingByCode
     ) {
         $this->getRatingIdByCode = $getRatingIdByCode;
-        $this->ratingProcessor = $getRatingByCode;
+        $this->getOptionIdByRatingIdAndValue = $getRatingByCode;
         $this->ratingFactory = $ratingFactory;
         $this->voteCollectionFactory = $collectionFactory;
     }
@@ -68,9 +67,9 @@ class SaveHandler
      */
     public function execute(ReviewInterface $entity)
     {
-        $storeId = $entity->getStoreId();
+        $storeId = (int) $entity->getStoreId();
         $reviewRatings = $entity->getRatings() ?? [];
-        $reviewId = $entity->getId();
+        $reviewId = (int) $entity->getId();
         $votes = $this->getVotes($reviewId);
 
         foreach ($reviewRatings as $ratingVote) {
@@ -82,11 +81,11 @@ class SaveHandler
                 continue;
             }
 
-            $optionId = $this->ratingProcessor->execute($ratingId, $ratingVote->getValue());
+            $optionId = $this->getOptionIdByRatingIdAndValue->execute($ratingId, $ratingVote->getValue());
             $vote = $votes->getItemByColumnValue('rating_id', $ratingId);
 
             if ($vote) {
-                $this->updateVote($vote->getId(), $reviewId, $optionId);
+                $this->updateVote((int) $vote->getId(), $reviewId, $optionId);
             } else {
                 $this->createRatingVote($entity, $ratingId, $optionId);
             }
