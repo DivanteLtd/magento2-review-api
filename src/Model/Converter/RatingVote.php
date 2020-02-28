@@ -6,6 +6,8 @@
  * @license See LICENSE_DIVANTE.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Divante\ReviewApi\Model\Converter;
 
 use Divante\ReviewApi\Api\Data\RatingVoteInterface as RatingDataInterface;
@@ -42,11 +44,13 @@ class RatingVote
     }
 
     /**
+     * Retrieve Rating
+     *
      * @param array $data
      *
      * @return RatingDataInterface
      */
-    public function arrayToDataModel(array $data)
+    public function arrayToDataModel(array $data): RatingDataInterface
     {
         /** @var RatingDataInterface $rating */
         $rating = $this->ratingDataFactory->create();

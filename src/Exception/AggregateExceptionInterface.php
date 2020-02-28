@@ -16,8 +16,7 @@ use Magento\Framework\Exception\LocalizedException;
 interface AggregateExceptionInterface
 {
     /**
-     * Returns LocalizedException[] array to be compatible with current Implementation in Web API which relies on
-     * this behavior
+     * Returns LocalizedException[] array
      *
      * @see the \Magento\Framework\Webapi\Exception which receives $errors as a set of Localized Exceptions
      *

@@ -16,5 +16,12 @@ use Divante\ReviewApi\Validation\ValidationResult;
  */
 interface ReviewValidatorInterface
 {
+    /**
+     * Validate Review
+     *
+     * @param ReviewInterface $review
+     *
+     * @return ValidationResult
+     */
     public function validate(ReviewInterface $review): ValidationResult;
 }

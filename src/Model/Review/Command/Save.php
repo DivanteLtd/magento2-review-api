@@ -6,18 +6,24 @@
  * @license See LICENSE_DIVANTE.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Divante\ReviewApi\Model\Review\Command;
 
+use Divante\ReviewApi\Api\Data\ReviewInterface;
 use Divante\ReviewApi\Model\Converter\Review\ToModel;
 use Divante\ReviewApi\Model\Converter\Review\ToDataModel;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Review\Model\ResourceModel\Review as ReviewResource;
 use Divante\ReviewApi\Validation\ValidationException;
 use Divante\ReviewApi\Model\ReviewValidatorInterface;
+use Magento\Review\Model\Review;
 use Magento\Store\Model\StoreManagerInterface;
 use Divante\ReviewApi\Model\Review\Rating\SaveHandler;
 
 /**
- * Class Save
+ * @inheritdoc
  */
 class Save implements SaveInterface
 {
@@ -37,7 +43,7 @@ class Save implements SaveInterface
     private $reviewResource;
 
     /**
-     * @var ReviewValidator
+     * @var ReviewValidatorInterface
      */
     private $reviewValidator;
 
@@ -78,22 +84,18 @@ class Save implements SaveInterface
     }
 
     /**
-     * @inheritdoc
+     * Save Review
      *
-     * @throws \Magento\Framework\Exception\AlreadyExistsException
+     * @param ReviewInterface $dataModel
+     *
+     * @return ReviewInterface
+     * @throws ValidationException
+     * @throws AlreadyExistsException
+     * @throws NoSuchEntityException
      */
-    public function execute($dataModel)
+    public function execute(ReviewInterface $dataModel): ReviewInterface
     {
-        $stores = $dataModel->getStores();
-
-        if (null === $stores || empty($stores)) {
-            $dataModel->setStores([$this->storeManager->getStore()->getId()]);
-        }
-
-        if ((null === $dataModel->getId()) && (null === $dataModel->getStoreId())) {
-            $dataModel->setStoreId($this->storeManager->getStore()->getId());
-        }
-
+        $this->updateStores($dataModel);
         $validationResult = $this->reviewValidator->validate($dataModel);
 
         if (!$validationResult->isValid()) {
@@ -101,20 +103,56 @@ class Save implements SaveInterface
             throw new ValidationException(__($msg), null, 0, $validationResult);
         }
 
-        $model = $this->toModelConverter->toModel($dataModel);
+        $model = $this->saveReview($dataModel);
+        $this->reviewResource->aggregate($model);
 
+        return $this->toDataModelConverter->toDataModel($model);
+    }
+
+    /**
+     * Save Review
+     *
+     * @param ReviewInterface $dataModel
+     *
+     * @return Review
+     * @throws AlreadyExistsException
+     * @throws NoSuchEntityException
+     */
+    private function saveReview(ReviewInterface $dataModel): Review
+    {
+        $model = $this->toModelConverter->toModel($dataModel);
         $this->reviewResource->save($model);
         $this->reviewResource->load($model, $model->getId());
 
-        if (null === $dataModel->getStoreId()) {
+        if ($dataModel->getStoreId() === null) {
             $dataModel->setStoreId($model->getStoreId());
         }
 
         $dataModel->setId($model->getId());
         $this->ratingSaveHandler->execute($dataModel);
-        
-        $this->reviewResource->aggregate($model);
 
-        return $this->toDataModelConverter->toDataModel($model);
+        return $model;
+    }
+
+    /**
+     * Update Review Stores
+     *
+     * @param ReviewInterface $dataModel
+     *
+     * @return void
+     *
+     * @throws NoSuchEntityException
+     */
+    private function updateStores(ReviewInterface $dataModel): void
+    {
+        $stores = $dataModel->getStores();
+
+        if ($stores === null || empty($stores)) {
+            $dataModel->setStores([$this->storeManager->getStore()->getId()]);
+        }
+
+        if (($dataModel->getId() === null) && ($dataModel->getStoreId() === null)) {
+            $dataModel->setStoreId($this->storeManager->getStore()->getId());
+        }
     }
 }

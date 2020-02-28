@@ -13,7 +13,13 @@ use Divante\ReviewApi\Exception\AggregateExceptionInterface;
 use Magento\Framework\Phrase;
 
 /**
- * Class ValidationException
+ * Validation exception with possibility to set several error messages
+ *
+ * ValidationException exists to be compatible with the Web-API (SOAP and REST) implementation which currently
+ * uses Magento\Framework\Exception\AggregateExceptionInterface returned as a result of ServiceContracts call
+ * to support Multi-Error response.
+ *
+ * @see \Magento\Framework\Validation\ValidationException in Magento 2.3
  */
 class ValidationException extends LocalizedException implements AggregateExceptionInterface
 {
@@ -23,8 +29,10 @@ class ValidationException extends LocalizedException implements AggregateExcepti
     private $validationResult;
 
     /**
+     * ValidationException constructor.
+     *
      * @param Phrase $phrase
-     * @param \Exception $cause
+     * @param \Exception|null $cause
      * @param int $code
      * @param ValidationResult|null $validationResult
      */
@@ -39,7 +47,9 @@ class ValidationException extends LocalizedException implements AggregateExcepti
     }
 
     /**
-     * @inheritdoc
+     * Retrieve errors list
+     *
+     * @return array
      */
     public function getErrors(): array
     {

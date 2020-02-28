@@ -12,7 +12,7 @@ use Divante\ReviewApi\Api\Data\ReviewSearchResultInterface;
 use Magento\Framework\Api\SearchResults;
 
 /**
- * Class ReviewSearchResult
+ * @inheritdoc
  */
 class ReviewSearchResult extends SearchResults implements ReviewSearchResultInterface
 {

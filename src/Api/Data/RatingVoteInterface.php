@@ -1,15 +1,19 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Api\Data;
 
 /**
- * Interface RatingVoteInterface
+ * Represents a ReviewVote object
+ *
+ * Used fully qualified namespaces in annotations for proper work of WebApi request parser
+ *
+ * @api
  */
 interface RatingVoteInterface
 {
@@ -41,6 +45,8 @@ interface RatingVoteInterface
     public function getRatingName();
 
     /**
+     * Retrieve Review Vote in percent
+     *
      * @return int
      */
     public function getPercent();
@@ -54,35 +60,39 @@ interface RatingVoteInterface
     public function getValue();
 
     /**
+     * Set Review Percent
+     *
      * @param int $percent
      * @return RatingVoteInterface
      */
     public function setPercent($percent);
 
     /**
-     * Set rating id.
+     * Set vote id.
      *
-     * @param int|null $id
+     * @param int $id
      *
      * @return RatingVoteInterface
      */
     public function setVoteId($id);
 
     /**
-     * @param int RatingVoteInterface
+     * Set Rating Id
      *
-     * @return mixed
+     * @param int $ratingRatingId
+     *
+     * @return $this
      */
     public function setRatingId($ratingRatingId);
 
     /**
      * Set rating code.
      *
-     * @param string $attributeCode
+     * @param string $ratingCode
      *
      * @return RatingVoteInterface
      */
-    public function setRatingName($attributeCode);
+    public function setRatingName($ratingCode);
 
     /**
      * Set rating value.

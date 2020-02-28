@@ -14,7 +14,7 @@ use Divante\ReviewApi\Validation\ValidationResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class ReviewValidationChain
+ * @inheritdoc
  */
 class ReviewValidationChain implements ReviewValidatorInterface
 {
@@ -52,6 +52,10 @@ class ReviewValidationChain implements ReviewValidatorInterface
 
     /**
      * @inheritdoc
+     *
+     * @param ReviewInterface $stock
+     *
+     * @return ValidationResult
      */
     public function validate(ReviewInterface $stock): ValidationResult
     {
@@ -61,9 +65,11 @@ class ReviewValidationChain implements ReviewValidatorInterface
             $validationResult = $validator->validate($stock);
 
             if (!$validationResult->isValid()) {
-                $errors = array_merge($errors, $validationResult->getErrors());
+                $errors[] = $validationResult->getErrors();
             }
         }
+
+        $errors = count($errors) ? array_merge(...$errors) : [];
 
         return $this->validationResultFactory->create(['errors' => $errors]);
     }

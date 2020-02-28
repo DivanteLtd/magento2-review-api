@@ -6,10 +6,16 @@
  * @license See LICENSE_DIVANTE.txt for license details.
  */
 
+declare(strict_types=1);
+
 namespace Divante\ReviewApi\Api\Data;
 
 /**
- * Interface ReviewInterface
+ * Represents a Review object
+ *
+ * Used fully qualified namespaces in annotations for proper work of WebApi request parser
+ *
+ * @api
  */
 interface ReviewInterface
 {
@@ -88,16 +94,14 @@ interface ReviewInterface
     public function getReviewEntity();
 
     /**
-     * Get reviewer type.
-     * Possible values: 1 - Customer, 2 - Guest, 3 - Administrator.
+     * Get reviewer type. Possible values: 1 - Customer, 2 - Guest, 3 - Administrator.
      *
      * @return int
      */
     public function getReviewType();
 
     /**
-     * Get review status.
-     * Possible values: 1 - Approved, 2 - Pending, 3 - Not Approved.
+     * Get review status. Possible values: 1 - Approved, 2 - Pending, 3 - Not Approved.
      *
      * @return int
      */
@@ -113,7 +117,9 @@ interface ReviewInterface
     public function setId($id);
 
     /**
-     * @param $title
+     * Set Review Ttle
+     *
+     * @param string $title
      *
      * @return $this
      */
@@ -165,8 +171,7 @@ interface ReviewInterface
     public function setReviewEntity($entity);
 
     /**
-     * Set review status.
-     * Possible values: 1 - Approved, 2 - Pending, 3 - Not Approved.
+     * Set review status. Possible values: 1 - Approved, 2 - Pending, 3 - Not Approved.
      *
      * @param int $status
      *
@@ -175,23 +180,24 @@ interface ReviewInterface
     public function setReviewStatus($status);
 
     /**
-     * Set reviewer type.
-     * Possible values: 1 - Customer, 2 - Guest, 3 - Administrator.
+     * Set reviewer type. Possible values: 1 - Customer, 2 - Guest, 3 - Administrator.
      *
      * @param int $type
      *
-     * @return string
+     * @return $this
      */
-    public function setReviewType($type);
+    public function setReviewType(int $type);
 
     /**
-     * Posted date
+     * Get posted date
      *
      * @return string
      */
     public function getCreatedAt();
 
     /**
+     * Set Posted date
+     *
      * @param string $createdAt
      *
      * @return $this
@@ -199,6 +205,8 @@ interface ReviewInterface
     public function setCreatedAt($createdAt);
 
     /**
+     * Set Entity Id
+     *
      * @param int $id
      *
      * @return $this
@@ -206,17 +214,22 @@ interface ReviewInterface
     public function setEntityPkValue($id);
 
     /**
+     * Get Entity ID
+     *
      * @return int
      */
     public function getEntityPkValue();
 
     /**
-     * Store id in which review was added
+     * Get Store id in which review was added
+     *
      * @return int
      */
     public function getStoreId();
 
     /**
+     * Set primary Store Id
+     *
      * @param int $storeId
      *
      * @return $this
@@ -224,15 +237,18 @@ interface ReviewInterface
     public function setStoreId($storeId);
 
     /**
-     * Stores in which review is visible
+     * Get stores in which review is visible
+     *
      * @return int[]
      */
     public function getStores();
 
     /**
+     * Set Stores Ids
+     *
      * @param array $stores
      *
      * @return $this
      */
-    public function setStores($stores);
+    public function setStores(array $stores);
 }
