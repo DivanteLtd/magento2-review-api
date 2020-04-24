@@ -13,7 +13,9 @@ use Divante\ReviewApi\Validation\ValidationResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * @inheritdoc
+ * Chain of validators. Extension point for new validators via di configuration
+ *
+ * @api
  */
 class ReviewValidationChain implements ReviewValidatorInterface
 {

@@ -8,7 +8,6 @@
       "role": "Developer"
     }
   ],
-  "version": "1.3.0",
   "require": {
     "php": "~7.1.0|~7.2.0|~7.3.0",
     "magento/module-review": ">=100.2.0"

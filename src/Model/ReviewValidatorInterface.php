@@ -11,7 +11,10 @@ use Divante\ReviewApi\Api\Data\ReviewInterface;
 use Divante\ReviewApi\Validation\ValidationResult;
 
 /**
- * Interface ReviewValidatorInterface
+ * Responsible for Review validation
+ * Extension point for base validation
+ *
+ * @api
  */
 interface ReviewValidatorInterface
 {
