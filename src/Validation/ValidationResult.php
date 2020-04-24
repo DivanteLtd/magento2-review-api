@@ -1,15 +1,19 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Validation;
 
 /**
- * Class ValidationResult
+ * ValidationResult object supposed to be created by dedicated validator service which makes a validation and checks
+ * whether all entity invariants (business rules that always should be fulfilled) are valid.
+ *
+ * ValidationResult represents a container storing all the validation errors that happened during the entity validation.
+ *
+ * @see \Magento\Framework\Validation\ValidationResult in Magento 2.3
  */
 class ValidationResult
 {
@@ -19,6 +23,8 @@ class ValidationResult
     private $errors = [];
 
     /**
+     * ValidationResult constructor.
+     *
      * @param array $errors
      */
     public function __construct(array $errors)
@@ -27,6 +33,8 @@ class ValidationResult
     }
 
     /**
+     * Check if Result is Valid
+     *
      * @return bool
      */
     public function isValid(): bool
@@ -35,6 +43,8 @@ class ValidationResult
     }
 
     /**
+     * Get Errors
+     *
      * @return array
      */
     public function getErrors(): array

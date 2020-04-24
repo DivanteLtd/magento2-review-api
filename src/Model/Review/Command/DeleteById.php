@@ -1,10 +1,9 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Model\Review\Command;
 
@@ -15,7 +14,7 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 
 /**
- * Class DeleteById
+ * @inheritdoc
  */
 class DeleteById implements DeleteByIdInterface
 {
@@ -53,8 +52,14 @@ class DeleteById implements DeleteByIdInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int $reviewId
+     *
+     * @return void
+     *
+     * @throws CouldNotDeleteException
      */
-    public function execute(int $reviewId)
+    public function execute(int $reviewId): void
     {
         /** @var Review $reviewModel */
         $reviewModel = $this->reviewFactory->create();
@@ -66,9 +71,9 @@ class DeleteById implements DeleteByIdInterface
 
         try {
             $this->reviewResource->delete($reviewModel);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-            throw new CouldNotDeleteException(__('Could not delete Review'), $e);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+            throw new CouldNotDeleteException(__('Could not delete Review'), $exception);
         }
     }
 }

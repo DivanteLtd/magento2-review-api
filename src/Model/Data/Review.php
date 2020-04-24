@@ -1,10 +1,9 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Model\Data;
 
@@ -12,12 +11,14 @@ use Divante\ReviewApi\Api\Data\ReviewInterface;
 use Magento\Framework\Api\AbstractSimpleObject;
 
 /**
- * Class Review
+ * @inheritdoc
  */
 class Review extends AbstractSimpleObject implements ReviewInterface
 {
     /**
      * @inheritdoc
+     *
+     * @return int|null
      */
     public function getId()
     {
@@ -26,6 +27,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return int|null
      */
     public function getCustomerId()
     {
@@ -34,6 +37,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return string
      */
     public function getDetail()
     {
@@ -42,6 +47,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return string
      */
     public function getNickname()
     {
@@ -50,6 +57,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return \Divante\ReviewApi\Api\Data\RatingVoteInterface[]
      */
     public function getRatings()
     {
@@ -58,6 +67,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return string
      */
     public function getReviewEntity()
     {
@@ -66,6 +77,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return int
      */
     public function getReviewType()
     {
@@ -74,6 +87,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return int
      */
     public function getReviewStatus()
     {
@@ -82,6 +97,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return string
      */
     public function getTitle()
     {
@@ -90,6 +107,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int $id
+     *
+     * @return $this
      */
     public function setId($id)
     {
@@ -98,6 +119,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param string $detail
+     *
+     * @return ReviewInterface
      */
     public function setDetail($detail)
     {
@@ -106,6 +131,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int|null $customerId
+     *
+     * @return ReviewInterface
      */
     public function setCustomerId($customerId)
     {
@@ -114,6 +143,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param string $nickName
+     *
+     * @return ReviewInterface
      */
     public function setNickname($nickName)
     {
@@ -122,6 +155,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param \Divante\ReviewApi\Api\Data\RatingVoteInterface[] $ratings
+     *
+     * @return Review|void
      */
     public function setRatings($ratings)
     {
@@ -130,6 +167,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param string $entity
+     *
+     * @return $this
      */
     public function setReviewEntity($entity)
     {
@@ -138,14 +179,22 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int $type
+     *
+     * @return $this
      */
-    public function setReviewType($type)
+    public function setReviewType(int $type)
     {
         return $this->setData(self::REVIEW_TYPE, $type);
     }
 
     /**
      * @inheritdoc
+     *
+     * @param int $status
+     *
+     * @return $this
      */
     public function setReviewStatus($status)
     {
@@ -154,6 +203,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
@@ -162,6 +215,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return string
      */
     public function getCreatedAt()
     {
@@ -170,6 +225,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param string $createdAt
+     *
+     * @return $this
      */
     public function setCreatedAt($createdAt)
     {
@@ -178,6 +237,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return int
      */
     public function getEntityPkValue()
     {
@@ -186,6 +247,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int $id
+     *
+     * @return $this
      */
     public function setEntityPkValue($id)
     {
@@ -194,6 +259,8 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @return array
      */
     public function getStores()
     {
@@ -202,14 +269,20 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param array $stores
+     *
+     * @return $this
      */
-    public function setStores($stores)
+    public function setStores(array $stores)
     {
         return $this->setData(self::STORES, $stores);
     }
 
     /**
      * @inheritdoc
+     *
+     * @return int
      */
     public function getStoreId()
     {
@@ -218,6 +291,10 @@ class Review extends AbstractSimpleObject implements ReviewInterface
 
     /**
      * @inheritdoc
+     *
+     * @param int $storeId
+     *
+     * @return $this
      */
     public function setStoreId($storeId)
     {

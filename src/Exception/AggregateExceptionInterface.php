@@ -1,10 +1,9 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Exception;
 
@@ -16,8 +15,7 @@ use Magento\Framework\Exception\LocalizedException;
 interface AggregateExceptionInterface
 {
     /**
-     * Returns LocalizedException[] array to be compatible with current Implementation in Web API which relies on
-     * this behavior
+     * Returns LocalizedException[] array
      *
      * @see the \Magento\Framework\Webapi\Exception which receives $errors as a set of Localized Exceptions
      *

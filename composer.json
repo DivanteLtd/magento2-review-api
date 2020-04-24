@@ -4,13 +4,12 @@
   "type": "magento2-module",
   "authors": [
     {
-      "name": "Agata Firlejczyk <afirlejczyk@divante.pl>",
+      "name": "Agata Firlejczyk <afirlejczyk@divante.com>",
       "role": "Developer"
     }
   ],
-  "version": "1.3.0",
   "require": {
-    "php": "7.0.2|7.0.4|~7.0.6|~7.1.0|~7.2.0",
+    "php": "~7.1.0|~7.2.0|~7.3.0",
     "magento/module-review": ">=100.2.0"
   },
   "autoload": {

@@ -1,10 +1,9 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Model\Converter;
 
@@ -42,11 +41,13 @@ class RatingVote
     }
 
     /**
+     * Retrieve Rating
+     *
      * @param array $data
      *
      * @return RatingDataInterface
      */
-    public function arrayToDataModel(array $data)
+    public function arrayToDataModel(array $data): RatingDataInterface
     {
         /** @var RatingDataInterface $rating */
         $rating = $this->ratingDataFactory->create();

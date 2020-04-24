@@ -1,10 +1,9 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Model;
 
@@ -14,7 +13,9 @@ use Divante\ReviewApi\Validation\ValidationResultFactory;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
- * Class ReviewValidationChain
+ * Chain of validators. Extension point for new validators via di configuration
+ *
+ * @api
  */
 class ReviewValidationChain implements ReviewValidatorInterface
 {
@@ -52,6 +53,10 @@ class ReviewValidationChain implements ReviewValidatorInterface
 
     /**
      * @inheritdoc
+     *
+     * @param ReviewInterface $stock
+     *
+     * @return ValidationResult
      */
     public function validate(ReviewInterface $stock): ValidationResult
     {
@@ -61,9 +66,11 @@ class ReviewValidationChain implements ReviewValidatorInterface
             $validationResult = $validator->validate($stock);
 
             if (!$validationResult->isValid()) {
-                $errors = array_merge($errors, $validationResult->getErrors());
+                $errors[] = $validationResult->getErrors();
             }
         }
+
+        $errors = count($errors) ? array_merge(...$errors) : [];
 
         return $this->validationResultFactory->create(['errors' => $errors]);
     }

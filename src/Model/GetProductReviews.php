@@ -1,25 +1,22 @@
 <?php
 /**
- * @package  Divante\ReviewApi
- * @author Agata Firlejczyk <afirlejczyk@divante.pl>
- * @copyright 2018 Divante Sp. z o.o.
- * @license See LICENSE_DIVANTE.txt for license details.
+ * Copyright Divante Sp. z o.o.
+ * See LICENSE_DIVANTE.txt for license details.
  */
+declare(strict_types=1);
 
 namespace Divante\ReviewApi\Model;
 
-use Divante\ReviewApi\Api\Data\ReviewInterfaceFactory;
 use Divante\ReviewApi\Api\GetProductReviewsInterface;
 use Magento\Review\Model\ResourceModel\Review\Product\Collection as ReviewCollection;
 use Magento\Review\Model\ResourceModel\Review\Product\CollectionFactory as ReviewCollectionFactory;
 use Divante\ReviewApi\Model\Converter\Review\ToDataModel as ReviewConverter;
 
 /**
- * Class GetProductReviews
+ * Class GetProductReviews load product reviews by product sku
  */
 class GetProductReviews implements GetProductReviewsInterface
 {
-
     /**
      * @var ReviewConverter
      */
@@ -46,8 +43,12 @@ class GetProductReviews implements GetProductReviewsInterface
 
     /**
      * @inheritdoc
+     *
+     * @param string $sku
+     *
+     * @return array|\Divante\ReviewApi\Api\Data\ReviewInterface[]
      */
-    public function execute($sku)
+    public function execute(string $sku)
     {
         /** @var ReviewCollection $collection */
         $collection = $this->reviewCollectionFactory->create();
