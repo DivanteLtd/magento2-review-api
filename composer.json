@@ -2,12 +2,7 @@
   "name": "divante/magento2-review-api",
   "description": "Review WebAPI",
   "type": "magento2-module",
-  "authors": [
-    {
-      "name": "Agata Firlejczyk <afirlejczyk@divante.com>",
-      "role": "Developer"
-    }
-  ],
+  "authors": [],
   "require": {
     "php": "~7.1.0|~7.2.0|~7.3.0|~7.4.0",
     "magento/module-review": ">=100.2.0"
