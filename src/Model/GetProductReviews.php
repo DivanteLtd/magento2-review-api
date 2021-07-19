@@ -54,6 +54,7 @@ class GetProductReviews implements GetProductReviewsInterface
         $collection = $this->reviewCollectionFactory->create();
         $collection->addStoreData();
         $collection->addFieldToFilter('sku', $sku);
+        $collection->addStatusFilter(\Magento\Review\Model\Review::STATUS_APPROVED);
         $collection->addRateVotes();
 
         $reviews = [];
