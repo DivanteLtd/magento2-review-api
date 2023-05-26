@@ -13,6 +13,9 @@
     <preference for="Divante\ReviewApi\Api\Data\ReviewSearchResultInterface" type="Divante\ReviewApi\Model\ReviewSearchResult"/>
     <preference for="Divante\ReviewApi\Model\Review\ReviewTypeResolverInterface" type="Divante\ReviewApi\Model\Review\ReviewTypeResolver"/>
 
+    <preference for="Divante\ReviewApi\Api\ReviewAggregatorInterface"
+                type="Divante\ReviewApi\Model\Review\Aggregator" />
+
     <type name="Divante\ReviewApi\Model\ReviewValidationChain">
         <arguments>
             <argument name="validators" xsi:type="array">
